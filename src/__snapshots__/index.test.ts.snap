@@ -269,3 +269,248 @@ Object {
   },
 }
 `;
+
+exports[`tests tag prefix test 1`] = `
+Object {
+  "graphql": [MockFunction] {
+    "calls": Array [
+      Array [
+        "
+            {
+              resource(url: \\"http://repository/commit/SHA1\\") {
+                ... on Commit {
+                  messageHeadlineHTML
+                  messageBodyHTML
+                  associatedPullRequests(first: 10) {
+                    pageInfo {
+                      hasNextPage
+                    }
+                    edges {
+                      node {
+                        bodyHTML
+                        number
+                        labels(first: 10) {
+                          pageInfo {
+                            hasNextPage
+                          }
+                          nodes {
+                            name
+                          }
+                        }
+                        timelineItems(itemTypes: [CONNECTED_EVENT, DISCONNECTED_EVENT], first: 100) {
+                          pageInfo {
+                            hasNextPage
+                          }
+                          nodes {
+                            ... on ConnectedEvent {
+                              __typename
+                              isCrossRepository
+                              subject {
+                                ... on Issue {
+                                  number
+                                }
+                              }
+                            }
+                            ... on DisconnectedEvent {
+                              __typename
+                              isCrossRepository
+                              subject {
+                                ... on Issue {
+                                  number
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ",
+      ],
+      Array [
+        "
+            {
+              resource(url: \\"http://repository/commit/SHA2\\") {
+                ... on Commit {
+                  messageHeadlineHTML
+                  messageBodyHTML
+                  associatedPullRequests(first: 10) {
+                    pageInfo {
+                      hasNextPage
+                    }
+                    edges {
+                      node {
+                        bodyHTML
+                        number
+                        labels(first: 10) {
+                          pageInfo {
+                            hasNextPage
+                          }
+                          nodes {
+                            name
+                          }
+                        }
+                        timelineItems(itemTypes: [CONNECTED_EVENT, DISCONNECTED_EVENT], first: 100) {
+                          pageInfo {
+                            hasNextPage
+                          }
+                          nodes {
+                            ... on ConnectedEvent {
+                              __typename
+                              isCrossRepository
+                              subject {
+                                ... on Issue {
+                                  number
+                                }
+                              }
+                            }
+                            ... on DisconnectedEvent {
+                              __typename
+                              isCrossRepository
+                              subject {
+                                ... on Issue {
+                                  number
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ",
+      ],
+    ],
+    "results": Array [
+      Object {
+        "type": "return",
+        "value": Promise {},
+      },
+      Object {
+        "type": "return",
+        "value": Promise {},
+      },
+    ],
+  },
+  "rest": Object {
+    "issues": Object {
+      "addLabels": [MockFunction],
+      "createComment": [MockFunction] {
+        "calls": Array [
+          Array [
+            Object {
+              "body": "Included in release [pkg-abc@2.0.0](http://pkg-abc/2)",
+              "issue_number": 3,
+            },
+          ],
+          Array [
+            Object {
+              "body": "Included in release [pkg-abc@2.0.0](http://pkg-abc/2)",
+              "issue_number": 123,
+            },
+          ],
+          Array [
+            Object {
+              "body": "Included in release [pkg-abc@2.0.0](http://pkg-abc/2)",
+              "issue_number": 7,
+            },
+          ],
+          Array [
+            Object {
+              "body": "Included in release [pkg-abc@2.0.0](http://pkg-abc/2)",
+              "issue_number": 4,
+            },
+          ],
+          Array [
+            Object {
+              "body": "Included in release [pkg-abc@2.0.0](http://pkg-abc/2)",
+              "issue_number": 5,
+            },
+          ],
+          Array [
+            Object {
+              "body": "Included in release [pkg-abc@2.0.0](http://pkg-abc/2)",
+              "issue_number": 9,
+            },
+          ],
+          Array [
+            Object {
+              "body": "Included in release [pkg-abc@2.0.0](http://pkg-abc/2)",
+              "issue_number": 2,
+            },
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+        ],
+      },
+    },
+    "repos": Object {
+      "compareCommits": [MockFunction] {
+        "calls": Array [
+          Array [
+            Object {
+              "base": "pkg-abc@1.0.0",
+              "head": "pkg-abc@2.0.0",
+            },
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+        ],
+      },
+      "listReleases": [MockFunction] {
+        "calls": Array [
+          Array [
+            Object {
+              "per_page": 2,
+            },
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+        ],
+      },
+    },
+  },
+}
+`;

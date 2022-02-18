@@ -20,12 +20,14 @@ const releaseTagTemplateRegex = /{release_tag}/g;
     const commentTemplate = core.getInput("comment-template");
     const labelTemplate = core.getInput("label-template") || null;
     const skipLabelTemplate = core.getInput("skip-label") || null;
+    const tagPrefix = core.getInput("tag-prefix") || "";
 
     // watch out, this is returning deleted releases for some reason
-    const { data: releases } = await octokit.rest.repos.listReleases({
+    const { data: allReleases } = await octokit.rest.repos.listReleases({
       ...github.context.repo,
       per_page: 2,
     });
+    const releases = allReleases.filter(release => (release.tag_name || "").startsWith(tagPrefix))
 
     if (releases.length < 2) {
       if (!releases.length) {

@@ -41,6 +41,10 @@ jobs:
             Release {release_link} addresses this.
 ```
 
+**tag-prefix** (optional)
+
+Only consider releases whose tag starts with this value. Can be useful for monorepos which tag releases using a tagging convention like `pkg-a@1.0.0`, `pkg-b@1.0.1`.
+
 ## Known limitations
 
 These are some known limitations of this action. I'd like to try to address them in the future.

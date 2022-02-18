@@ -33,6 +33,7 @@ describe("tests", () => {
   let commentTempate: string = "";
   let labelTemplate: string | null = null;
   const skipLabelTemplate: string | null = "skip,test";
+  let tagPrefix: string | null = null;
 
   let simpleMockOctokit: any = {};
 
@@ -54,6 +55,9 @@ describe("tests", () => {
       }
       if (key == "skip-label") {
         return skipLabelTemplate;
+      }
+      if (key == "tag-prefix") {
+        return tagPrefix;
       }
       fail(`Unexpected input key ${key}`);
     });
@@ -223,9 +227,131 @@ describe("tests", () => {
     expect(mockOctokit).toMatchSnapshot();
   });
 
+  test("tag prefix test", async () => {
+    tagPrefix = "pkg-abc@";
+    mockOctokit = {
+      ...simpleMockOctokit,
+      rest: {
+        issues: {
+          createComment: jest.fn(() => Promise.resolve()),
+          addLabels: jest.fn(() => Promise.resolve()),
+        },
+        repos: {
+          listReleases: jest.fn(() =>
+            Promise.resolve({
+              data: [
+                {
+                  tag_name: "pkg-abc@2.0.0",
+                  html_url: "http://pkg-abc/2",
+                },
+                {
+                  tag_name: "pkg-xyz@2.0.0",
+                  html_url: "http://pkg-xyz/2",
+                },
+                {
+                  tag_name: "pkg-abc@1.0.0",
+                  html_url: "http://pkg-abc/1",
+                },
+                {
+                  tag_name: "pkg-xyz@1.0.0",
+                  html_url: "http://pkg-xyz/1",
+                },
+              ],
+            })
+          ),
+          compareCommits: jest.fn(() =>
+            Promise.resolve({
+              data: { commits: [{ sha: "SHA1" }, { sha: "SHA2" }] },
+            })
+          ),
+        },
+      },
+      graphql: jest.fn(() =>
+        Promise.resolve({
+          resource: {
+            messageHeadlineHTML:
+              '<span class="issue-keyword tooltipped tooltipped-se" aria-label="This commit closes issue #3.">Closes</span> <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="718013420" data-permission-text="Title is private" data-url="https://github.com/apexskier/github-release-commenter/issues/1" data-hovercard-type="issue" data-hovercard-url="/apexskier/github-release-commenter/issues/1/hovercard" href="https://github.com/apexskier/github-release-commenter/issues/1">#1</a>',
+            messageBodyHTML:
+              '<span class="issue-keyword tooltipped tooltipped-se" aria-label="This commit closes issue #123.">Closes</span> <p><span class="issue-keyword tooltipped tooltipped-se" aria-label="This pull request closes issue #7.">Closes</span>',
+            associatedPullRequests: {
+              pageInfo: { hasNextPage: false },
+              edges: [
+                {
+                  node: {
+                    bodyHTML:
+                      '<span class="issue-keyword tooltipped tooltipped-se" aria-label="This commit closes issue #4.">Closes</span> <span class="issue-keyword tooltipped tooltipped-se" aria-label="This commit closes issue #5.">Closes</span>',
+                    number: 9,
+                    labels: {
+                      pageInfo: { hasNextPage: false },
+                      nodes: [{ name: "label1" }, { name: "label2" }],
+                    },
+                    timelineItems: {
+                      pageInfo: { hasNextPage: false },
+                      nodes: [
+                        {
+                          isCrossRepository: true,
+                          __typename: "ConnectedEvent",
+                          subject: { number: 1 },
+                        },
+                        {
+                          isCrossRepository: false,
+                          __typename: "ConnectedEvent",
+                          subject: { number: 2 },
+                        },
+                        {
+                          isCrossRepository: false,
+                          __typename: "DisconnectedEvent",
+                          subject: { number: 2 },
+                        },
+                        {
+                          isCrossRepository: false,
+                          __typename: "ConnectedEvent",
+                          subject: { number: 2 },
+                        },
+                      ],
+                    },
+                  },
+                },
+                {
+                  node: {
+                    bodyHTML: "",
+                    number: 42,
+                    labels: {
+                      pageInfo: { hasNextPage: false },
+                      nodes: [{ name: "label1" }, { name: "skip" }],
+                    },
+                    timelineItems: {
+                      pageInfo: { hasNextPage: false },
+                      nodes: [
+                        {
+                          isCrossRepository: true,
+                          __typename: "ConnectedEvent",
+                          subject: { number: 82 },
+                        },
+                      ],
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        })
+      ),
+    };
+
+    jest.isolateModules(() => {
+      require("./index");
+    });
+
+    await new Promise<void>(setImmediate);
+
+    expect(mockOctokit).toMatchSnapshot();
+  });
+
   describe("feature tests", () => {
     beforeEach(() => {
       mockOctokit = simpleMockOctokit;
+      tagPrefix = "";
     });
 
     it("can disable comments", async () => {

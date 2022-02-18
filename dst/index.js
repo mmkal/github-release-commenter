@@ -87,7 +87,7 @@ var releaseNameTemplateRegex = /{release_name}/g;
 var releaseTagTemplateRegex = /{release_tag}/g;
 (function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var payload_1, githubToken, octokit_1, commentTemplate, labelTemplate, skipLabelTemplate, releases, _a, currentRelease_1, priorRelease, commits, releaseLabel_1, comment, parseLabels, labels, skipLabels_1, linkedIssuesPrs_2, requests, linkedIssuesPrs_1, linkedIssuesPrs_1_1, issueStr, issueNumber, baseRequest, request, request, error_1;
+        var payload_1, githubToken, octokit_1, commentTemplate, labelTemplate, skipLabelTemplate, tagPrefix_1, allReleases, releases, _a, currentRelease_1, priorRelease, commits, releaseLabel_1, comment, parseLabels, labels, skipLabels_1, linkedIssuesPrs_2, requests, linkedIssuesPrs_1, linkedIssuesPrs_1_1, issueStr, issueNumber, baseRequest, request, request, error_1;
         var e_1, _b;
         var _this = this;
         return __generator(this, function (_c) {
@@ -101,9 +101,11 @@ var releaseTagTemplateRegex = /{release_tag}/g;
                     commentTemplate = core.getInput("comment-template");
                     labelTemplate = core.getInput("label-template") || null;
                     skipLabelTemplate = core.getInput("skip-label") || null;
+                    tagPrefix_1 = core.getInput("tag-prefix") || "";
                     return [4 /*yield*/, octokit_1.rest.repos.listReleases(__assign(__assign({}, github.context.repo), { per_page: 2 }))];
                 case 1:
-                    releases = (_c.sent()).data;
+                    allReleases = (_c.sent()).data;
+                    releases = allReleases.filter(function (release) { return (release.tag_name || "").startsWith(tagPrefix_1); });
                     if (releases.length < 2) {
                         if (!releases.length) {
                             core.error("no releases found");
