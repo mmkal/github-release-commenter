@@ -22,6 +22,10 @@ inputs:
     description: Skip commenting if any of the given label are present. Multiple labels can be separated by commas.
     required: false
     default: "dependencies"
+  tag-prefix:
+    description: Only consider releases whose tag starts with this value.
+    required: false
+    default: ""
 runs:
   using: node12
   main: dst/index.js
